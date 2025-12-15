@@ -96,4 +96,45 @@ bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>
 {
 //add your solution here!
 
+		//BASECASE: Let's get the board size and check for bounds: #rows= #columns
+		unsigned int bSize= board.size();
+		if (r>=bSize || c>= bSize){ //PARAMETERS OUT OF BOUNDS, return early
+			return false;
+		}
+
+		//STEP 1: Let's build a word by adding chars
+		std::string wordNew= word+ board[r][c]; //This will add the current position, will use in recursion
+
+
+		//STEP 2: We can check if the word generated is in the dictionary
+		bool inDict= dict.find(wordNew)!=dict.end();
+
+
+
+		bool longerExists=false; //Variable to tracck whether a longer word exists beyond the current, initialized to false
+
+		//STEP 3: BACKTRACKING: If this word is not a valid prefix and not in the dictionary, we can return early
+		if (prefix.find(wordNew)==prefix.end()){
+			if (!inDict){
+				return false; //Dead end, stop recursion on this path
+				}
+		}
+
+		//STEP 4: We can recurse since we know this word is a valid prefix
+		else{
+			//STEP 5: Setting coordinates for recursion 
+			int nc=dc+c;
+			int nr=dr+r;
+
+			//STEP 6: Recurse and see if there is a longer word
+			longerExists=boggleHelper(dict, prefix, board, wordNew, result, nr, nc, dr, dc);
+		}
+
+		//STEP 7: If there is no longer word and is a valid word, insert into results and return true
+		if (!longerExists && (inDict)){
+			result.insert(wordNew);
+		}
+
+		//STEP 8: If the word forms a longer word or itself is a word, return true 
+		return (inDict || longerExists);
 }
